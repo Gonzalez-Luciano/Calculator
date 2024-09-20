@@ -1,14 +1,15 @@
 let history = document.getElementById("history");
 let input = document.getElementById("calcuText");
 let buttons = document.querySelectorAll("button");
+let specialKeys = ["+", "-", "*", "/", "%"];
 
 let string = "";
 let operator = "";
 let firstOperand = "";
 let secondOperand = "";
 
-input.addEventListener("keypress", (e) => {
-  if (!/[\d+\-*/%=.]/.test(e.key)) {
+input.addEventListener("keydown", (e) => {
+  if (!/[\d+\-*/%=.]/.test(e.key) && e.key !== "Backspace") {
     e.preventDefault();
   } else {
     let value = e.key; // Valor de la tecla presionada
@@ -37,15 +38,16 @@ input.addEventListener("keypress", (e) => {
       history.innerHTML = "";
     }
     // Si es 'DEL', elimina el último carácter
-    else if (value == "DEL") {
+    else if (value === "Backspace") {
       string = string.substring(0, string.length - 1);
-      input.value = string;
     }
     // Si es un operador (+, -, *, /, %), almacena el primer número y el operador
-    else if (["+", "-", "*", "/", "%"].includes(value)) {
+    else if (specialKeys.includes(value)) {
       e.preventDefault();
       if (string !== "") {
-        if (operator.length > 0) {
+        if (string === "-" && specialKeys.includes(value)) {
+          e.preventDefault();
+        } else if (operator.length > 0) {
           secondOperand = string;
           // Caso especial %
           if (value === "%") {
@@ -67,6 +69,16 @@ input.addEventListener("keypress", (e) => {
           operator = value;
           string = "";
           input.value = "";
+          history.innerHTML = `${firstOperand} ${operator}`;
+        }
+      } else if (value === "-") {
+        // Si el valor es "-", lo tratamos como un número negativo
+        if (string === "") {
+          string += "-"; // Agregar el signo negativo a la cadena del primer operando
+          input.value = string; // Mostrar el número negativo en el input
+        } else {
+          // Si ya hay un operador, entonces se trata del segundo operando
+          operator = value;
           history.innerHTML = `${firstOperand} ${operator}`;
         }
       }
@@ -112,9 +124,11 @@ Array.from(buttons).forEach((button) => {
       input.value = string;
     }
     // Si es un operador (+, -, *, /, %), almacena el primer número y el operador
-    else if (["+", "-", "*", "/", "%"].includes(value)) {
+    else if (specialKeys.includes(value)) {
       if (string !== "") {
-        if (operator.length > 0) {
+        if (string === "-" && specialKeys.includes(value)) {
+          e.preventDefault();
+        } else if (operator.length > 0) {
           secondOperand = string;
           // Caso especial %
           if (value === "%") {
@@ -134,6 +148,16 @@ Array.from(buttons).forEach((button) => {
           firstOperand = string;
           operator = value;
           string = "";
+          history.innerHTML = `${firstOperand} ${operator}`;
+        }
+      } else if (value === "-") {
+        // Si el valor es "-", lo tratamos como un número negativo
+        if (string === "") {
+          string += "-"; // Agregar el signo negativo a la cadena del primer operando
+          input.value = string; // Mostrar el número negativo en el input
+        } else {
+          // Si ya hay un operador, entonces se trata del segundo operando
+          operator = value;
           history.innerHTML = `${firstOperand} ${operator}`;
         }
       }
