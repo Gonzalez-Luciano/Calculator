@@ -1,7 +1,7 @@
 let history = document.getElementById("history");
 let input = document.getElementById("calcuText");
 let buttons = document.querySelectorAll("button");
-let specialKeys = ["+", "-", "*", "/", "%"];
+let specialKeys = ["+", "-", "*", "/", "%", "^", "√"];
 
 let string = "";
 let operator = "";
@@ -9,7 +9,7 @@ let firstOperand = "";
 let secondOperand = "";
 
 input.addEventListener("keydown", (e) => {
-  if (!/[\d+\-*/%=.]/.test(e.key) && e.key !== "Backspace") {
+  if (!/[\d+\-*/%=^√.]/.test(e.key) && e.key !== "Backspace") {
     e.preventDefault();
   } else {
     let value = e.key; // Valor de la tecla presionada
@@ -18,15 +18,26 @@ input.addEventListener("keydown", (e) => {
     // Si la tecla presionada es '=', realiza la operación
     if (value === "=") {
       e.preventDefault();
-      secondOperand = string;
-      // Convertir resultado a string asi no da error la funcion substring
-      let result = calculate(firstOperand, secondOperand, operator) + "";
-      string = result;
-      input.value = string;
-      firstOperand = "";
-      operator = "";
-      history.innerHTML = `${result} ${operator}`;
-      console.log("igual: " + string);
+      if (string[0] === "√") {
+        firstOperand = string.slice(1);
+        operator = "√";
+        let result = calculateSingle(firstOperand, operator);
+        string = result;
+        input.value = string;
+        firstOperand = "";
+        operator = "";
+        history.innerHTML = `${result}`;
+      } else {
+        secondOperand = string;
+        // Convertir resultado a string asi no da error la funcion substring
+        let result = calculate(firstOperand, secondOperand, operator) + "";
+        string = result;
+        input.value = string;
+        firstOperand = "";
+        operator = "";
+        history.innerHTML = `${result} ${operator}`;
+        console.log("igual: " + string);
+      }
     }
     // Si es 'AC', limpiar todo
     else if (value == "AC") {
@@ -47,6 +58,15 @@ input.addEventListener("keydown", (e) => {
       if (string !== "") {
         if (string === "-" && specialKeys.includes(value)) {
           e.preventDefault();
+        } else if (string.includes("√")) {
+          firstOperand = string.slice(1);
+          operator = "√";
+          let result = calculateSingle(firstOperand, operator);
+          firstOperand = result;
+          operator = value;
+          history.innerHTML = `${result} ${operator}`;
+          input.value = "";
+          string = "";
         } else if (operator.length > 0) {
           secondOperand = string;
           // Caso especial %
@@ -58,7 +78,6 @@ input.addEventListener("keydown", (e) => {
           } else {
             let result = calculate(firstOperand, secondOperand, operator) + "";
             input.value = "";
-            input.value = result;
             string = "";
             firstOperand = result;
             operator = value;
@@ -98,16 +117,27 @@ Array.from(buttons).forEach((button) => {
     console.log(value);
 
     // Si el botón presionado es '=', realiza la operación
-    if (value == "=") {
-      secondOperand = string;
-      // Convertir resultado a string asi no da error la funcion substring
-      let result = calculate(firstOperand, secondOperand, operator) + "";
-      string = result;
-      input.value = string;
-      firstOperand = "";
-      operator = "";
-      history.innerHTML = `${result} ${operator}`;
-      console.log("igual: " + string);
+    if (value === "=") {
+      if (string[0] === "√") {
+        firstOperand = string.slice(1);
+        operator = "√";
+        let result = calculateSingle(firstOperand, operator);
+        string = result;
+        input.value = string;
+        firstOperand = "";
+        operator = "";
+        history.innerHTML = `${result}`;
+      } else {
+        secondOperand = string;
+        // Convertir resultado a string asi no da error la funcion substring
+        let result = calculate(firstOperand, secondOperand, operator) + "";
+        string = result;
+        input.value = string;
+        firstOperand = "";
+        operator = "";
+        history.innerHTML = `${result} ${operator}`;
+        console.log("igual: " + string);
+      }
     }
     // Si es 'AC', limpiar todo
     else if (value == "AC") {
@@ -126,8 +156,17 @@ Array.from(buttons).forEach((button) => {
     // Si es un operador (+, -, *, /, %), almacena el primer número y el operador
     else if (specialKeys.includes(value)) {
       if (string !== "") {
-        if (string === "-" && specialKeys.includes(value)) {
+        if (string === "-" || (string === "√" && specialKeys.includes(value))) {
           e.preventDefault();
+        } else if (string.includes("√")) {
+          firstOperand = string.slice(1);
+          operator = "√";
+          let result = calculateSingle(firstOperand, operator);
+          firstOperand = result;
+          operator = value;
+          history.innerHTML = `${result} ${operator}`;
+          input.value = "";
+          string = "";
         } else if (operator.length > 0) {
           secondOperand = string;
           // Caso especial %
@@ -138,7 +177,7 @@ Array.from(buttons).forEach((button) => {
             history.innerHTML = `${firstOperand} ${operator} ${result}`;
           } else {
             let result = calculate(firstOperand, secondOperand, operator) + "";
-            input.value = result;
+            input.value = "";
             string = "";
             firstOperand = result;
             operator = value;
@@ -150,10 +189,10 @@ Array.from(buttons).forEach((button) => {
           string = "";
           history.innerHTML = `${firstOperand} ${operator}`;
         }
-      } else if (value === "-") {
+      } else if (value === "-" || value === "√") {
         // Si el valor es "-", lo tratamos como un número negativo
         if (string === "") {
-          string += "-"; // Agregar el signo negativo a la cadena del primer operando
+          string += value; // Agregar el signo negativo a la cadena del primer operando
           input.value = string; // Mostrar el número negativo en el input
         } else {
           // Si ya hay un operador, entonces se trata del segundo operando
@@ -172,6 +211,19 @@ Array.from(buttons).forEach((button) => {
 });
 
 // Función para realizar la operación matemática
+function calculateSingle(num, operator) {
+  console.log(num + operator);
+  let result;
+  let first = parseFloat(num);
+  switch (operator) {
+    case "√":
+      result = Math.pow(first, 0.5);
+      break;
+    default:
+      result = "Error";
+  }
+  return result;
+}
 function calculate(num1, num2, operator) {
   let result;
   let first = parseFloat(num1);
@@ -192,7 +244,9 @@ function calculate(num1, num2, operator) {
       break;
     case "%":
       result = first * (second / 100);
-      console.log(result);
+      break;
+    case "^":
+      result = Math.pow(first, second);
       break;
     default:
       result = "Error"; // Si no hay un operador válido

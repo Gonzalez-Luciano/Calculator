@@ -1,5 +1,5 @@
 body {
-  background    : linear-gradient(to bottom right, #645e5e, #1b1a1a);
+  background: linear-gradient(to bottom right, #645e5e, #1b1a1a);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,11 +33,13 @@ body {
 }
 
 #calcuText::placeholder {
-  color: #cfcfcf; /* Cambia el color del placeholder */
-  opacity: 1;  /* Controla la opacidad (1 es totalmente visible) */
+  color: #cfcfcf;
+  /* Cambia el color del placeholder */
+  opacity: 1;
+  /* Controla la opacidad (1 es totalmente visible) */
 }
 
-#history{
+#history {
   width: 100%;
   height: 50px;
   text-align: right;
@@ -51,42 +53,54 @@ body {
   grid-gap: 25px;
 }
 
-.button{
-    width: auto;
-    padding: 2px;
-    height: 30px;
-    background-color: #928d8d;
-    border: 1px solid transparent;
-    transition: all .2s;
+.button {
+  width: auto;
+  padding: 2px;
+  height: 30px;
+  background-color: #928d8d;
+  border: 1px solid transparent;
+  transition: all .2s;
 }
 
-.button:hover{
-    border: 1px solid #fff;
-    background-color: #6f6b6b;
-    color: #fff;
-    transform: scale(1.05); 
+.button:hover {
+  border: 1px solid #fff;
+  background-color: #6f6b6b;
+  color: #fff;
+  transform: scale(1.05);
 }
 
-.buttonRed{
-    background-color: #ff3333;
-        color: #fff;
-        transition: all .2s;
+.buttonBlack {
+  background-color: #1b1b1b;
+  color: #fff;
+  border-radius: 5px;
 }
 
-.buttonRed:hover{
-    background-color: #e20202;
-    color: #fff;
-    transform: scale(1.05); 
+.buttonBlack:hover {
+  border: 1px solid #2723fd;
+  background-color: #292929;
+  color: #fff;
 }
 
-.buttonEqual{
+.buttonRed {
+  background-color: #ff3333;
+  color: #fff;
+  transition: all .2s;
+}
+
+.buttonRed:hover {
+  background-color: #e20202;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.buttonEqual {
   background-color: #1452ff;
   color: #fff;
   transition: all .2s;
 }
 
-.buttonEqual:hover{
+.buttonEqual:hover {
   background-color: #386dff;
   color: #fff;
-  transform: scale(1.05); 
+  transform: scale(1.05);
 }
