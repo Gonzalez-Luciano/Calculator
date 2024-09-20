@@ -7,6 +7,78 @@ let operator = "";
 let firstOperand = "";
 let secondOperand = "";
 
+input.addEventListener("keypress", (e) => {
+  if (!/[\d+\-*/%=.]/.test(e.key)) {
+    e.preventDefault();
+  } else {
+    let value = e.key; // Valor de la tecla presionada
+    console.log(value);
+
+    // Si la tecla presionada es '=', realiza la operación
+    if (value === "=") {
+      e.preventDefault();
+      secondOperand = string;
+      // Convertir resultado a string asi no da error la funcion substring
+      let result = calculate(firstOperand, secondOperand, operator) + "";
+      string = result;
+      input.value = string;
+      firstOperand = "";
+      operator = "";
+      history.innerHTML = `${result} ${operator}`;
+      console.log("igual: " + string);
+    }
+    // Si es 'AC', limpiar todo
+    else if (value == "AC") {
+      string = "";
+      operator = "";
+      firstOperand = "";
+      secondOperand = "";
+      input.value = "";
+      history.innerHTML = "";
+    }
+    // Si es 'DEL', elimina el último carácter
+    else if (value == "DEL") {
+      string = string.substring(0, string.length - 1);
+      input.value = string;
+    }
+    // Si es un operador (+, -, *, /, %), almacena el primer número y el operador
+    else if (["+", "-", "*", "/", "%"].includes(value)) {
+      e.preventDefault();
+      if (string !== "") {
+        if (operator.length > 0) {
+          secondOperand = string;
+          // Caso especial %
+          if (value === "%") {
+            let result = calculate(firstOperand, secondOperand, value) + "";
+            input.value = result;
+            string = result;
+            history.innerHTML = `${firstOperand} ${operator} ${result}`;
+          } else {
+            let result = calculate(firstOperand, secondOperand, operator) + "";
+            input.value = "";
+            input.value = result;
+            string = "";
+            firstOperand = result;
+            operator = value;
+            history.innerHTML = `${result} ${operator}`;
+          }
+        } else {
+          firstOperand = string;
+          operator = value;
+          string = "";
+          input.value = "";
+          history.innerHTML = `${firstOperand} ${operator}`;
+        }
+      }
+    }
+    // Si es un número, sigue agregando al string
+    else {
+      string += value;
+      console.log("agregado: " + string);
+    }
+  }
+});
+
 // Convertir la lista de botones en un array y agregar eventos a cada botón
 Array.from(buttons).forEach((button) => {
   button.addEventListener("click", (e) => {
